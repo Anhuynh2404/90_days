@@ -1,0 +1,6 @@
+{
+  "name": "Project 90",
+  "description": "Extreme 90-day habit transformation tracker before February with movement, nutrition, digital detox, 5 AM hardcore camera alarm, finance, and self-growth.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
