@@ -25,7 +25,7 @@ import java.util.Locale
 
 object HabitNotificationHelper {
 
-    const val CHANNEL_ID = "project90_persistent_channel"
+    const val CHANNEL_ID = "project90_dashboard_fixed_channel"
     const val CHANNEL_NAME = "Project 90 Ongoing Habit Checklist"
     const val NOTIFICATION_ID = 9001
 
@@ -36,9 +36,11 @@ object HabitNotificationHelper {
                 CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Bảng Dashboard theo dõi thói quen chuyên nghiệp ghim 24/7 trên thanh thông báo"
+                description = "Bảng Dashboard theo dõi thói quen chuyên nghiệp ghim cố định 24/7 trên thanh thông báo"
                 setShowBadge(true)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                enableVibration(false)
+                enableLights(false)
             }
 
             val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
@@ -107,10 +109,12 @@ object HabitNotificationHelper {
             setProgressBar(R.id.notif_collapsed_progressbar, 100, percent, false)
             setTextViewText(R.id.notif_collapsed_progress_text, "$completedCount/$totalCount Đạt ($percent%)")
             if (isCompletedAll) {
-                setTextViewText(R.id.notif_collapsed_status, "🔥 100% Hoàn thành! Chuỗi kỷ luật tiếp tục vững vàng!")
+                setTextViewText(R.id.notif_collapsed_status, "🔥 100% Hoàn thành! Chuỗi $currentStreak ngày kỷ luật thép vững chắc!")
+                setTextColor(R.id.notif_collapsed_status, android.graphics.Color.parseColor("#48BB78"))
             } else {
                 val pendingCount = totalCount - completedCount
-                setTextViewText(R.id.notif_collapsed_status, "⚠️ Còn $pendingCount mục chưa xong hôm nay (Kéo xuống để xem)")
+                setTextViewText(R.id.notif_collapsed_status, "⚠️ Còn $pendingCount mục chưa xong hôm nay (Kéo xuống xem chi tiết)")
+                setTextColor(R.id.notif_collapsed_status, android.graphics.Color.parseColor("#C6D8CB"))
             }
         }
 
@@ -125,24 +129,30 @@ object HabitNotificationHelper {
 
             // 4 Mini Dashboard Tiles
             setTextViewText(R.id.notif_stat_steps, "${numberFormat.format(stepCount)} / 10k")
-            setTextViewText(R.id.notif_stat_water, "${numberFormat.format(waterMl)} / 2.000ml")
+            setTextViewText(R.id.notif_stat_water, "${numberFormat.format(waterMl)} / 2L")
             setTextViewText(
                 R.id.notif_stat_workout,
-                if (pushupDone && squatDone) "50/50 • 100/100" else "50 Hít • 100 Squat"
+                if (pushupDone && squatDone) "50/50 • 100/100 ✅" else "50 Hít • 100 Sq"
             )
             setTextViewText(
                 R.id.notif_stat_sugar,
                 if (noSugarDone) "ĐÃ ĐẠT ✅" else "CHƯA ĐẠT ⚠️"
             )
+            setTextColor(
+                R.id.notif_stat_sugar,
+                if (noSugarDone) android.graphics.Color.parseColor("#48BB78") else android.graphics.Color.parseColor("#FFA726")
+            )
 
             // Summary Callout Box
             if (isCompletedAll) {
                 setTextViewText(R.id.notif_expanded_summary_title, "🔥 XUẤT SẮC! HOÀN THÀNH 100% TOÀN BỘ MỤC TIÊU HÔM NAY")
-                setTextViewText(R.id.notif_expanded_summary_body, "Kỷ luật thép đã được giữ vững! Chuỗi $currentStreak ngày liên tiếp không một ngày lơ là.")
+                setTextViewText(R.id.notif_expanded_summary_body, "Kỷ luật thép đã được giữ vững! Chuỗi $currentStreak ngày liên tiếp không một ngày lơ là.\nChúc mừng bạn đã bảo vệ chuỗi thành công!")
+                setTextColor(R.id.notif_expanded_summary_title, android.graphics.Color.parseColor("#48BB78"))
             } else {
                 val pendingCount = totalCount - completedCount
                 setTextViewText(R.id.notif_expanded_summary_title, "⚠️ CÒN $pendingCount MỤC CHƯA HOÀN THÀNH HÔM NAY:")
                 setTextViewText(R.id.notif_expanded_summary_body, pendingHabitsText)
+                setTextColor(R.id.notif_expanded_summary_title, android.graphics.Color.parseColor("#FFA726"))
             }
 
             // Click Handlers for Interactive Buttons
@@ -151,26 +161,48 @@ object HabitNotificationHelper {
             setOnClickPendingIntent(R.id.notif_btn_add_steps, addStepsPendingIntent)
         }
 
+        // Resilience against dismiss attempts: if somehow cleared, instantly relaunch notification
+        val deleteIntent = Intent(context, NotificationActionReceiver::class.java).apply {
+            action = NotificationActionReceiver.ACTION_REPOST
+        }
+        val deletePendingIntent = PendingIntent.getBroadcast(
+            context,
+            103,
+            deleteIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         val fallbackTitle = if (isCompletedAll) {
             "🔥 Project 90: Đã hoàn tất 100% mục tiêu hôm nay ($completedCount/$totalCount)"
         } else {
             "⚠️ Project 90: Còn ${totalCount - completedCount} mục chưa hoàn thành!"
         }
 
-        return NotificationCompat.Builder(context, CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_stat_flame)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setContentTitle(fallbackTitle)
             .setContentText(if (isCompletedAll) "Chúc mừng chuỗi $currentStreak ngày kỷ luật!" else "Chạm để mở Dashboard")
             .setCustomContentView(collapsedViews)
             .setCustomBigContentView(expandedViews)
             .setContentIntent(openAppPendingIntent)
+            .setDeleteIntent(deletePendingIntent)
             .setOngoing(true) // CANNOT BE SWIPED AWAY
             .setAutoCancel(false)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setOnlyAlertOnce(true)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+            .setLocalOnly(true)
             .build()
+
+        notification.flags = notification.flags or
+                Notification.FLAG_ONGOING_EVENT or
+                Notification.FLAG_NO_CLEAR or
+                Notification.FLAG_FOREGROUND_SERVICE
+
+        return notification
     }
 
     fun postOrUpdateNotification(context: Context) {
@@ -221,19 +253,20 @@ object HabitNotificationHelper {
                 val noSugarDone = logsMap["no_sugar"]?.isCompleted == true
 
                 val pendingHabitsText = if (pendingHabits.isNotEmpty()) {
+                    val numberFormat = NumberFormat.getInstance(Locale("vi", "VN"))
                     val items = pendingHabits.take(5).joinToString("\n") { habit ->
                         val log = logsMap[habit.id]
                         val progress = log?.progressValue ?: 0
                         if (habit.targetValue > 1) {
-                            "• ${habit.title}: Đã ${progress}/${habit.targetValue} ${habit.unit}"
+                            "• ${habit.title}: Đã ${numberFormat.format(progress)}/${numberFormat.format(habit.targetValue)} ${habit.unit}"
                         } else {
                             "• ${habit.title}"
                         }
                     }
                     val more = if (pendingHabits.size > 5) "\n(+${pendingHabits.size - 5} mục khác)" else ""
-                    "$items$more\n👉 Bấm nút bên dưới để cập nhật nhanh hoặc mở app!"
+                    "$items$more\n👉 Chạm để vào Dashboard hoặc bấm nút thao tác nhanh bên dưới!"
                 } else {
-                    "Toàn bộ mục tiêu trong ngày đã hoàn tất xuất sắc."
+                    "Toàn bộ mục tiêu trong ngày đã hoàn tất xuất sắc! Kỷ luật thép được duy trì."
                 }
 
                 val notification = buildDashboardNotification(
@@ -253,6 +286,22 @@ object HabitNotificationHelper {
                     isCompletedAll = isCompletedAll
                 )
 
+                // 1. If foreground service is running, update it via startForeground directly!
+                if (PersistentHabitNotificationService.isServiceRunning) {
+                    PersistentHabitNotificationService.updateIfRunning(notification)
+                } else {
+                    // If not running, ensure foreground service starts immediately
+                    val intent = Intent(context, PersistentHabitNotificationService::class.java)
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            context.startForegroundService(intent)
+                        } else {
+                            context.startService(intent)
+                        }
+                    } catch (_: Exception) {}
+                }
+
+                // 2. Also notify via NotificationManager to ensure synchronous system sync
                 val manager = NotificationManagerCompat.from(context)
                 manager.notify(NOTIFICATION_ID, notification)
             } catch (_: Exception) {}

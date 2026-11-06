@@ -15,12 +15,18 @@ class NotificationActionReceiver : BroadcastReceiver() {
     companion object {
         const val ACTION_ADD_WATER = "com.example.ACTION_ADD_WATER"
         const val ACTION_ADD_STEPS = "com.example.ACTION_ADD_STEPS"
+        const val ACTION_REPOST = "com.example.ACTION_REPOST"
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         if (context == null || intent == null) return
 
         val action = intent.action
+        if (action == ACTION_REPOST) {
+            PersistentHabitNotificationService.startOrUpdate(context)
+            return
+        }
+
         val app = context.applicationContext as? Project90Application ?: return
         val repo = app.repository
         val todayEpochDay = LocalDate.now().toEpochDay()

@@ -1,5 +1,6 @@
 package com.example.service
 
+import android.app.Notification
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -21,11 +22,14 @@ class PersistentHabitNotificationService : Service() {
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     companion object {
-        fun startOrUpdate(context: Context) {
-            // First, immediately post the notification via NotificationManagerCompat so it displays instantly
-            HabitNotificationHelper.postOrUpdateNotification(context)
+        @Volatile
+        var isServiceRunning = false
+            private set
 
-            // Next, start the foreground service to ensure background persistence
+        @Volatile
+        private var activeServiceInstance: PersistentHabitNotificationService? = null
+
+        fun startOrUpdate(context: Context) {
             val intent = Intent(context, PersistentHabitNotificationService::class.java)
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -34,13 +38,26 @@ class PersistentHabitNotificationService : Service() {
                     context.startService(intent)
                 }
             } catch (_: Exception) {}
+
+            // Post notification immediately to guarantee instantaneous appearance
+            HabitNotificationHelper.postOrUpdateNotification(context)
+        }
+
+        fun updateIfRunning(notification: Notification) {
+            val service = activeServiceInstance
+            if (service != null && isServiceRunning) {
+                service.applyForegroundNotification(notification)
+            }
         }
     }
 
     override fun onCreate() {
         super.onCreate()
+        isServiceRunning = true
+        activeServiceInstance = this
         HabitNotificationHelper.createNotificationChannel(this)
 
+        // Lock notification via startForeground immediately upon creation
         val initialNotif = HabitNotificationHelper.buildDashboardNotification(
             context = this,
             dayNumber = 1,
@@ -54,26 +71,15 @@ class PersistentHabitNotificationService : Service() {
             pushupDone = false,
             squatDone = false,
             noSugarDone = false,
-            pendingHabitsText = "Đang tải bảng theo dõi thói quen...",
+            pendingHabitsText = "Đang đồng bộ bảng theo dõi thói quen 24/7...",
             isCompletedAll = false
         )
-
-        // Android 14+ requires foregroundServiceType matching manifest
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val fgsType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
-            } else {
-                0
-            }
-            ServiceCompat.startForeground(this, HabitNotificationHelper.NOTIFICATION_ID, initialNotif, fgsType)
-        } else {
-            startForeground(HabitNotificationHelper.NOTIFICATION_ID, initialNotif)
-        }
+        applyForegroundNotification(initialNotif)
 
         // Post fresh content right away
         HabitNotificationHelper.postOrUpdateNotification(this)
 
-        // Real-time observer on repository
+        // Real-time observer on repository: whenever data changes, update pinned notification
         serviceScope.launch {
             val app = applicationContext as? Project90Application ?: return@launch
             val repo = app.repository
@@ -90,22 +96,56 @@ class PersistentHabitNotificationService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        isServiceRunning = true
+        activeServiceInstance = this
         HabitNotificationHelper.postOrUpdateNotification(this)
         return START_STICKY
+    }
+
+    fun applyForegroundNotification(notification: Notification) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val fgsType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            } else {
+                0
+            }
+            ServiceCompat.startForeground(this, HabitNotificationHelper.NOTIFICATION_ID, notification, fgsType)
+        } else {
+            startForeground(HabitNotificationHelper.NOTIFICATION_ID, notification)
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onDestroy() {
         super.onDestroy()
+        isServiceRunning = false
+        activeServiceInstance = null
         serviceScope.cancel()
-        // Ensure notification is still alive even if service is destroyed
-        HabitNotificationHelper.postOrUpdateNotification(this)
+
+        // Restart service immediately to ensure 24/7 unkillable persistence
+        val restartIntent = Intent(applicationContext, PersistentHabitNotificationService::class.java)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                applicationContext.startForegroundService(restartIntent)
+            } else {
+                applicationContext.startService(restartIntent)
+            }
+        } catch (_: Exception) {}
+        HabitNotificationHelper.postOrUpdateNotification(applicationContext)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        // User swiped app away from recents: ensure notification stays in status bar!
-        HabitNotificationHelper.postOrUpdateNotification(this)
+        // User swiped app away from recents: ensure notification stays permanently pinned in status bar!
+        val restartIntent = Intent(applicationContext, PersistentHabitNotificationService::class.java)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                applicationContext.startForegroundService(restartIntent)
+            } else {
+                applicationContext.startService(restartIntent)
+            }
+        } catch (_: Exception) {}
+        HabitNotificationHelper.postOrUpdateNotification(applicationContext)
     }
 }
