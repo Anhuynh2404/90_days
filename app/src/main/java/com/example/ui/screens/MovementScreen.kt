@@ -40,20 +40,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.ui.theme.CharcoalCard
-import com.example.ui.theme.CharcoalCardElevated
-import com.example.ui.theme.CyberCyan
+import com.example.ui.theme.CardBorder
+import com.example.ui.theme.CardWhite
+import com.example.ui.theme.EcoBackground
+import com.example.ui.theme.ForestGreen
+import com.example.ui.theme.ForestGreenDark
 import com.example.ui.theme.GoldenStreak
-import com.example.ui.theme.NeonFlame
-import com.example.ui.theme.ObsidianBlack
+import com.example.ui.theme.LeafGreen
+import com.example.ui.theme.MarineAqua
+import com.example.ui.theme.MintBorder
+import com.example.ui.theme.MintLight
 import com.example.ui.theme.SuccessGreen
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.WarmAmber
 import com.example.ui.viewmodel.Project90ViewModel
 
 @Composable
@@ -84,7 +91,7 @@ fun MovementScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(ObsidianBlack)
+            .background(EcoBackground)
             .testTag("movement_screen"),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -98,12 +105,12 @@ fun MovementScreen(
                         fontWeight = FontWeight.Black,
                         letterSpacing = 1.sp
                     ),
-                    color = NeonFlame
+                    color = ForestGreen
                 )
                 Text(
                     text = "Đốt mỡ thụ động, bứt phá sức mạnh cơ bắp & sức bền",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = TextSecondary
                 )
             }
         }
@@ -111,11 +118,12 @@ fun MovementScreen(
         // Pedometer 10,000 Steps Card
         item {
             Card(
-                colors = CardDefaults.cardColors(containerColor = CharcoalCard),
+                colors = CardDefaults.cardColors(containerColor = CardWhite),
                 shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, Color(0xFF2B3344), RoundedCornerShape(20.dp))
+                    .border(1.dp, CardBorder, RoundedCornerShape(20.dp))
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
                     Row(
@@ -123,54 +131,58 @@ fun MovementScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f).padding(end = 8.dp)) {
                             Box(
                                 contentAlignment = Alignment.Center,
                                 modifier = Modifier
                                     .size(42.dp)
                                     .clip(CircleShape)
-                                    .background(NeonFlame.copy(alpha = 0.15f))
+                                    .background(MintLight)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.DirectionsRun,
                                     contentDescription = "Pedometer",
-                                    tint = NeonFlame,
+                                    tint = ForestGreen,
                                     modifier = Modifier.size(24.dp)
                                 )
                             }
                             Spacer(modifier = Modifier.width(12.dp))
-                            Column {
+                            Column(modifier = Modifier.weight(1f)) {
                                 Text(
                                     text = "BỘ ĐẾM BƯỚC CHÂN",
                                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                                    color = Color.White
+                                    color = TextPrimary,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                                 Text(
                                     text = "Mục tiêu 10.000 bước/ngày",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = TextSecondary,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
                         }
 
-                        // Sensor status
+                        // Sensor status badge
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .background(Color(0xFF222836), RoundedCornerShape(10.dp))
+                                .background(MintLight, RoundedCornerShape(10.dp))
                                 .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Sensors,
                                 contentDescription = "Sensor",
-                                tint = if (hasHardwareSensor) SuccessGreen else CyberCyan,
+                                tint = if (hasHardwareSensor) SuccessGreen else ForestGreen,
                                 modifier = Modifier.size(14.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = if (hasHardwareSensor) "Sensor ON" else "Mô phỏng",
                                 fontSize = 11.sp,
-                                color = if (hasHardwareSensor) SuccessGreen else CyberCyan,
+                                color = if (hasHardwareSensor) SuccessGreen else ForestGreen,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -188,13 +200,13 @@ fun MovementScreen(
                             text = String.format("%,d", stepCount),
                             fontSize = 38.sp,
                             fontWeight = FontWeight.Black,
-                            color = if (stepCount >= stepGoal) SuccessGreen else Color.White
+                            color = if (stepCount >= stepGoal) SuccessGreen else ForestGreenDark
                         )
                         Text(
                             text = "/ 10.000 bước (${(stepPercent * 100).toInt()}%)",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = GoldenStreak,
+                            color = WarmAmber,
                             modifier = Modifier.padding(bottom = 6.dp)
                         )
                     }
@@ -207,8 +219,8 @@ fun MovementScreen(
                             .fillMaxWidth()
                             .height(10.dp)
                             .clip(RoundedCornerShape(5.dp)),
-                        color = if (stepCount >= stepGoal) SuccessGreen else NeonFlame,
-                        trackColor = Color(0xFF242A38)
+                        color = if (stepCount >= stepGoal) SuccessGreen else LeafGreen,
+                        trackColor = Color(0xFFE8EFE9)
                     )
 
                     Spacer(modifier = Modifier.height(14.dp))
@@ -221,23 +233,26 @@ fun MovementScreen(
                         OutlinedButton(
                             onClick = { viewModel.addManualSteps(500) },
                             modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(10.dp)
+                            shape = RoundedCornerShape(10.dp),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
                         ) {
-                            Text("+500", fontSize = 12.sp, color = Color.White)
+                            Text("+500", fontSize = 12.sp, color = ForestGreen, fontWeight = FontWeight.Bold)
                         }
                         OutlinedButton(
                             onClick = { viewModel.addManualSteps(1000) },
                             modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(10.dp)
+                            shape = RoundedCornerShape(10.dp),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
                         ) {
-                            Text("+1.000", fontSize = 12.sp, color = Color.White)
+                            Text("+1.000", fontSize = 12.sp, color = ForestGreen, fontWeight = FontWeight.Bold)
                         }
                         OutlinedButton(
                             onClick = { viewModel.addManualSteps(2500) },
                             modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(10.dp)
+                            shape = RoundedCornerShape(10.dp),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
                         ) {
-                            Text("+2.500", fontSize = 12.sp, color = Color.White)
+                            Text("+2.500", fontSize = 12.sp, color = ForestGreen, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
@@ -252,7 +267,7 @@ fun MovementScreen(
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
                 ),
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = TextPrimary
             )
         }
 
@@ -301,7 +316,7 @@ fun MovementScreen(
                 sub = "Giải phóng adrenaline tự nhiên, tỉnh táo tuyệt đối",
                 icon = Icons.Default.LocalDrink,
                 isDone = coldShowerDone,
-                color = CyberCyan,
+                color = MarineAqua,
                 onToggle = {
                     viewModel.toggleHabit("cold_shower", coldShowerDone, if (coldShowerDone) 1 else 0, 1)
                 }
@@ -317,7 +332,7 @@ fun MovementScreen(
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
                 ),
-                color = GoldenStreak
+                color = ForestGreen
             )
         }
 
@@ -347,7 +362,7 @@ fun MovementScreen(
                 sub = "Cardio bứt tốc, nâng cao phản xạ và tinh thần chiến binh",
                 icon = Icons.Default.SportsSoccer,
                 isDone = footballDone,
-                color = SuccessGreen,
+                color = LeafGreen,
                 onToggle = {
                     viewModel.toggleHabit("football_weekly", footballDone, if (footballDone) 1 else 0, 1)
                 }
@@ -374,13 +389,14 @@ fun ExerciseTrackerCard(
 ) {
     val isDone = current >= target
     Card(
-        colors = CardDefaults.cardColors(containerColor = CharcoalCard),
+        colors = CardDefaults.cardColors(containerColor = CardWhite),
         shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = modifier
             .fillMaxWidth()
             .border(
                 1.dp,
-                if (isDone) SuccessGreen.copy(alpha = 0.5f) else Color(0xFF282F3E),
+                if (isDone) SuccessGreen.copy(alpha = 0.5f) else CardBorder,
                 RoundedCornerShape(16.dp)
             )
     ) {
@@ -390,32 +406,36 @@ fun ExerciseTrackerCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f).padding(end = 8.dp)) {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .size(40.dp)
                             .clip(RoundedCornerShape(10.dp))
-                            .background(if (isDone) SuccessGreen.copy(alpha = 0.15f) else NeonFlame.copy(alpha = 0.15f))
+                            .background(if (isDone) SuccessGreen.copy(alpha = 0.15f) else MintLight)
                     ) {
                         Icon(
                             imageVector = icon,
                             contentDescription = title,
-                            tint = if (isDone) SuccessGreen else NeonFlame,
+                            tint = if (isDone) SuccessGreen else ForestGreen,
                             modifier = Modifier.size(22.dp)
                         )
                     }
                     Spacer(modifier = Modifier.width(12.dp))
-                    Column {
+                    Column(modifier = Modifier.weight(1f)) {
                         Text(
                             text = title,
                             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                            color = Color.White
+                            color = TextPrimary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Text(
                             text = sub,
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = TextSecondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
                 }
@@ -425,8 +445,8 @@ fun ExerciseTrackerCard(
                     modifier = Modifier
                         .size(34.dp)
                         .clip(CircleShape)
-                        .background(if (isDone) SuccessGreen else Color(0xFF252B38))
-                        .border(1.dp, if (isDone) SuccessGreen else Color(0xFF3B465B), CircleShape)
+                        .background(if (isDone) SuccessGreen else MintLight)
+                        .border(1.dp, if (isDone) SuccessGreen else MintBorder, CircleShape)
                 ) {
                     if (isDone) {
                         Icon(Icons.Default.Check, contentDescription = "Done", tint = Color.White, modifier = Modifier.size(18.dp))
@@ -445,7 +465,7 @@ fun ExerciseTrackerCard(
                     text = "$current / $target $unit",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = if (isDone) SuccessGreen else GoldenStreak
+                    color = if (isDone) SuccessGreen else WarmAmber
                 )
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -453,22 +473,28 @@ fun ExerciseTrackerCard(
                         onClick = onIncrement,
                         enabled = !isDone,
                         shape = RoundedCornerShape(8.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder),
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                     ) {
-                        Icon(Icons.Default.Add, contentDescription = "Add", modifier = Modifier.size(16.dp))
+                        Icon(Icons.Default.Add, contentDescription = "Add", tint = ForestGreen, modifier = Modifier.size(16.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Tăng", fontSize = 12.sp, color = Color.White)
+                        Text("Tăng", fontSize = 12.sp, color = ForestGreen, fontWeight = FontWeight.Bold)
                     }
 
                     Button(
                         onClick = onComplete,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = if (isDone) Color(0xFF2B3342) else NeonFlame
+                            containerColor = if (isDone) Color(0xFFE2EBE4) else ForestGreen
                         ),
                         shape = RoundedCornerShape(8.dp),
                         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp)
                     ) {
-                        Text(if (isDone) "Hủy" else "Xong", fontSize = 12.sp, color = Color.White)
+                        Text(
+                            if (isDone) "Hủy" else "Xong",
+                            fontSize = 12.sp,
+                            color = if (isDone) TextSecondary else Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
@@ -487,13 +513,14 @@ fun SimpleToggleCard(
     modifier: Modifier = Modifier
 ) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = CharcoalCard),
+        colors = CardDefaults.cardColors(containerColor = CardWhite),
         shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = modifier
             .fillMaxWidth()
             .border(
                 1.dp,
-                if (isDone) SuccessGreen.copy(alpha = 0.5f) else Color(0xFF282F3E),
+                if (isDone) SuccessGreen.copy(alpha = 0.5f) else CardBorder,
                 RoundedCornerShape(16.dp)
             )
     ) {
@@ -504,27 +531,31 @@ fun SimpleToggleCard(
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f).padding(end = 10.dp)) {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .size(40.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(color.copy(alpha = 0.15f))
+                        .background(color.copy(alpha = 0.12f))
                 ) {
                     Icon(imageVector = icon, contentDescription = title, tint = color, modifier = Modifier.size(22.dp))
                 }
                 Spacer(modifier = Modifier.width(12.dp))
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                        color = Color.White
+                        color = TextPrimary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = sub,
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSecondary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
@@ -532,7 +563,7 @@ fun SimpleToggleCard(
             Button(
                 onClick = onToggle,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isDone) SuccessGreen else Color(0xFF2C3345)
+                    containerColor = if (isDone) SuccessGreen else MintLight
                 ),
                 shape = RoundedCornerShape(10.dp),
                 contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
@@ -541,7 +572,9 @@ fun SimpleToggleCard(
                     text = if (isDone) "Đã Đạt" else "Hoàn thành",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = if (isDone) Color.White else ForestGreen,
+                    maxLines = 1,
+                    softWrap = false
                 )
             }
         }

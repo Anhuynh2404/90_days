@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notif_expanded_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/transparent"
+    android:paddingStart="0dp"
+    android:paddingEnd="0dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="4dp">
+
+    <!-- Top Command Header: Full Width -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/notif_expanded_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PROJECT 90 • NGÀY 12 / 90"
+                android:textColor="#48BB78"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/notif_expanded_countdown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Còn 78 ngày đếm ngược đến Tháng 2"
+                android:textColor="#8E9CB2"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/notif_expanded_streak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🔥 7 Ngày Chuỗi"
+            android:textColor="#FFB800"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_notif_stat"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp" />
+    </LinearLayout>
+
+    <!-- Main Progress Bar: Full Width -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TIẾN ĐỘ HÔM NAY"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/notif_expanded_progress_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8 / 13 Mục (62%)"
+                android:textColor="#00E5FF"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/notif_expanded_progressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="7dp"
+            android:layout_marginTop="4dp"
+            android:max="100"
+            android:progress="62"
+            android:progressDrawable="@drawable/notif_progressbar" />
+    </LinearLayout>
+
+    <!-- Mini Dashboard 4-Tile Grid: Edge-to-Edge with full width weight -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <!-- Stat 1: Steps -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_notif_stat"
+            android:padding="6dp"
+            android:layout_marginEnd="4dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👟 BƯỚC"
+                android:textColor="#8E9CB2"
+                android:textSize="9sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/notif_stat_steps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6.840"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Stat 2: Water -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_notif_stat"
+            android:padding="6dp"
+            android:layout_marginEnd="4dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💧 NƯỚC"
+                android:textColor="#8E9CB2"
+                android:textSize="9sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/notif_stat_water"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1.500ml"
+                android:textColor="#00E5FF"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Stat 3: Movement Pushup/Squat -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_notif_stat"
+            android:padding="6dp"
+            android:layout_marginEnd="4dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🏋️ THỂ LỰC"
+                android:textColor="#8E9CB2"
+                android:textSize="9sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/notif_stat_workout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="50 Hít đất"
+                android:textColor="#10B981"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Stat 4: No Sugar -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_notif_stat"
+            android:padding="6dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🚫 NO SUGAR"
+                android:textColor="#8E9CB2"
+                android:textSize="9sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/notif_stat_sugar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ĐÃ ĐẠT"
+                android:textColor="#10B981"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Checklist Status Summary Box: Full Width -->
+    <LinearLayout
+        android:id="@+id/notif_expanded_summary_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_notif_stat"
+        android:padding="8dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/notif_expanded_summary_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚠️ CÁC MỤC CHƯA HOÀN THÀNH HÔM NAY:"
+            android:textColor="#FF5E1E"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/notif_expanded_summary_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="• Đọc sách 20 phút\n• Viết 3 dòng nhật ký tối\n• Uống thêm 500ml nước"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:lineSpacingExtra="1dp" />
+    </LinearLayout>
+
+    <!-- Interactive Action Buttons: Full Width -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/notif_btn_open_app"
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_weight="1.2"
+            android:background="@drawable/bg_notif_button"
+            android:gravity="center"
+            android:text="📋 MỞ DASHBOARD"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="4dp" />
+
+        <TextView
+            android:id="@+id/notif_btn_add_water"
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_notif_button"
+            android:gravity="center"
+            android:text="💧 +250ML"
+            android:textColor="#00E5FF"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="4dp" />
+
+        <TextView
+            android:id="@+id/notif_btn_add_steps"
+            android:layout_width="0dp"
+            android:layout_height="34dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_notif_button"
+            android:gravity="center"
+            android:text="👟 +500 BƯỚC"
+            android:textColor="#FFB800"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</LinearLayout>

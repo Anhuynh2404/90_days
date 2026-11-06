@@ -26,7 +26,6 @@ import androidx.compose.material.icons.filled.LocalDrink
 import androidx.compose.material.icons.filled.Nightlight
 import androidx.compose.material.icons.filled.NoDrinks
 import androidx.compose.material.icons.filled.Savings
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -46,13 +45,16 @@ import androidx.compose.ui.unit.sp
 import com.example.data.local.entity.DailyLogEntity
 import com.example.data.local.entity.HabitCategory
 import com.example.data.local.entity.HabitEntity
-import com.example.ui.theme.CharcoalBorder
-import com.example.ui.theme.CharcoalCard
-import com.example.ui.theme.CyberCyan
-import com.example.ui.theme.DangerCrimson
+import com.example.ui.theme.CardBorder
+import com.example.ui.theme.CardWhite
+import com.example.ui.theme.ForestGreen
 import com.example.ui.theme.GoldenStreak
-import com.example.ui.theme.NeonFlame
+import com.example.ui.theme.MintBorder
+import com.example.ui.theme.MintLight
 import com.example.ui.theme.SuccessGreen
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.WarmAmber
 
 @Composable
 fun HabitChecklistItem(
@@ -65,7 +67,7 @@ fun HabitChecklistItem(
     val progress = log?.progressValue ?: 0
 
     val borderColor by animateColorAsState(
-        targetValue = if (isDone) SuccessGreen.copy(alpha = 0.5f) else CharcoalBorder,
+        targetValue = if (isDone) SuccessGreen.copy(alpha = 0.5f) else CardBorder,
         label = "border_color"
     )
 
@@ -84,7 +86,7 @@ fun HabitChecklistItem(
             .fillMaxWidth()
             .testTag("habit_item_${habit.id}")
             .clip(RoundedCornerShape(16.dp))
-            .background(CharcoalCard)
+            .background(CardWhite)
             .border(1.dp, borderColor, RoundedCornerShape(16.dp))
             .clickable { onToggle() }
             .padding(14.dp)
@@ -101,13 +103,13 @@ fun HabitChecklistItem(
                     .clip(RoundedCornerShape(12.dp))
                     .background(
                         if (isDone) SuccessGreen.copy(alpha = 0.15f)
-                        else NeonFlame.copy(alpha = 0.12f)
+                        else MintLight
                     )
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = habit.title,
-                    tint = if (isDone) SuccessGreen else NeonFlame,
+                    tint = if (isDone) SuccessGreen else ForestGreen,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -126,7 +128,7 @@ fun HabitChecklistItem(
                     Text(
                         text = habit.title,
                         style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                        color = if (isDone) Color.White.copy(alpha = 0.85f) else Color.White,
+                        color = if (isDone) TextSecondary else TextPrimary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
@@ -137,9 +139,9 @@ fun HabitChecklistItem(
                             text = "Hàng tuần",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
-                            color = CyberCyan,
+                            color = ForestGreen,
                             modifier = Modifier
-                                .background(CyberCyan.copy(alpha = 0.15f), RoundedCornerShape(6.dp))
+                                .background(MintLight, RoundedCornerShape(6.dp))
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         )
                     }
@@ -150,7 +152,7 @@ fun HabitChecklistItem(
                 Text(
                     text = habit.description,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = TextSecondary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -168,15 +170,15 @@ fun HabitChecklistItem(
                                 .weight(1f)
                                 .height(6.dp)
                                 .clip(RoundedCornerShape(3.dp)),
-                            color = if (isDone) SuccessGreen else NeonFlame,
-                            trackColor = Color(0xFF232A39)
+                            color = if (isDone) SuccessGreen else ForestGreen,
+                            trackColor = Color(0xFFE8EFE9)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = "$progress / ${habit.targetValue} ${habit.unit}",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = if (isDone) SuccessGreen else GoldenStreak
+                            color = if (isDone) SuccessGreen else WarmAmber
                         )
                     }
                 }
@@ -191,11 +193,11 @@ fun HabitChecklistItem(
                     .size(36.dp)
                     .clip(CircleShape)
                     .background(
-                        if (isDone) SuccessGreen else Color(0xFF232A39)
+                        if (isDone) SuccessGreen else MintLight
                     )
                     .border(
                         1.5.dp,
-                        if (isDone) SuccessGreen else Color(0xFF384357),
+                        if (isDone) SuccessGreen else MintBorder,
                         CircleShape
                     )
             ) {

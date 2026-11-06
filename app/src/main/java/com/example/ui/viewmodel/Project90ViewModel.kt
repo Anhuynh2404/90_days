@@ -25,6 +25,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+import com.example.service.AlarmToneType
+import com.example.service.AlarmVibrationType
+import com.example.service.HabitNotificationHelper
+import com.example.service.PersistentHabitNotificationService
+
 enum class AppTab(val title: String, val categoryTag: String) {
     DASHBOARD("Tổng Quan", "ALL"),
     MOVEMENT("Vận Động", "MOVEMENT"),
@@ -32,7 +37,8 @@ enum class AppTab(val title: String, val categoryTag: String) {
     DIGITAL("Detox & Ngủ", "DIGITAL_WELLBEING"),
     ALARM_5AM("Báo Thức 5:00", "WAKE_UP_5AM"),
     FINANCE("Tài Chính", "FINANCE"),
-    GROWTH("Phát Triển", "SELF_GROWTH")
+    GROWTH("Phát Triển", "SELF_GROWTH"),
+    SETTINGS("Cài Đặt", "SETTINGS")
 }
 
 data class DashboardSummary(
@@ -161,6 +167,7 @@ class Project90ViewModel(application: Application) : AndroidViewModel(applicatio
             val newCompleted = !currentCompleted
             val newProgress = if (newCompleted) target else 0
             repository.setHabitProgress(todayEpochDay, habitId, newCompleted, newProgress)
+            HabitNotificationHelper.postOrUpdateNotification(getApplication())
         }
     }
 
@@ -168,12 +175,14 @@ class Project90ViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             val isDone = newProgress >= target
             repository.setHabitProgress(todayEpochDay, habitId, isDone, newProgress)
+            HabitNotificationHelper.postOrUpdateNotification(getApplication())
         }
     }
 
     fun addWater(amountMl: Int) {
         viewModelScope.launch {
             repository.addWater(todayEpochDay, amountMl)
+            HabitNotificationHelper.postOrUpdateNotification(getApplication())
         }
     }
 
@@ -182,6 +191,7 @@ class Project90ViewModel(application: Application) : AndroidViewModel(applicatio
         val current = stepCounterManager.stepCount.value
         viewModelScope.launch {
             repository.updateSteps(todayEpochDay, current)
+            HabitNotificationHelper.postOrUpdateNotification(getApplication())
         }
     }
 
@@ -230,6 +240,43 @@ class Project90ViewModel(application: Application) : AndroidViewModel(applicatio
                 isSalary = sample.isSalary
             )
         }
+    }
+
+    // Alarm Sound & Vibration Settings
+    private val _selectedTone = MutableStateFlow(alarmSoundManager.selectedTone)
+    val selectedTone: StateFlow<AlarmToneType> = _selectedTone.asStateFlow()
+
+    private val _selectedVibration = MutableStateFlow(alarmSoundManager.selectedVibration)
+    val selectedVibration: StateFlow<AlarmVibrationType> = _selectedVibration.asStateFlow()
+
+    private val _alarmVolume = MutableStateFlow(alarmSoundManager.alarmVolumePercent)
+    val alarmVolume: StateFlow<Int> = _alarmVolume.asStateFlow()
+
+    fun setAlarmTone(tone: AlarmToneType) {
+        alarmSoundManager.selectedTone = tone
+        _selectedTone.value = tone
+    }
+
+    fun setAlarmVibration(vib: AlarmVibrationType) {
+        alarmSoundManager.selectedVibration = vib
+        _selectedVibration.value = vib
+    }
+
+    fun setAlarmVolume(volume: Int) {
+        alarmSoundManager.alarmVolumePercent = volume
+        _alarmVolume.value = volume
+    }
+
+    fun playTonePreview(tone: AlarmToneType) {
+        _isAlarmRinging.value = true
+        alarmSoundManager.triggerHardcoreAlarm(overrideTone = tone)
+    }
+
+    fun refreshPersistentNotification() {
+        try {
+            HabitNotificationHelper.postOrUpdateNotification(getApplication())
+            PersistentHabitNotificationService.startOrUpdate(getApplication())
+        } catch (_: Exception) {}
     }
 
     // Alarm controls

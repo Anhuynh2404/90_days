@@ -2,53 +2,31 @@ package com.example.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-private val Project90DarkColorScheme = darkColorScheme(
-    primary = NeonFlame,
+// Modern bright, friendly, and professional theme matching the clean sustainability aesthetic
+private val Project90LightColorScheme = lightColorScheme(
+    primary = ForestGreen,
     onPrimary = Color.White,
-    primaryContainer = FlameDark,
-    onPrimaryContainer = Color.White,
+    primaryContainer = MintLight,
+    onPrimaryContainer = ForestGreenDark,
     secondary = GoldenStreak,
-    onSecondary = Color.Black,
-    secondaryContainer = CharcoalCardElevated,
-    onSecondaryContainer = GoldenStreakLight,
-    tertiary = CyberCyan,
-    onTertiary = Color.Black,
-    tertiaryContainer = CharcoalCardElevated,
-    onTertiaryContainer = CyberCyan,
-    background = ObsidianBlack,
+    onSecondary = Color.White,
+    secondaryContainer = GoldenStreakLight,
+    onSecondaryContainer = ForestGreen,
+    tertiary = MarineAqua,
+    onTertiary = Color.White,
+    tertiaryContainer = AquaLight,
+    onTertiaryContainer = ForestGreenDark,
+    background = EcoBackground,
     onBackground = TextPrimary,
-    surface = CharcoalDark,
+    surface = CardWhite,
     onSurface = TextPrimary,
-    surfaceVariant = CharcoalCard,
+    surfaceVariant = MintSurface,
     onSurfaceVariant = TextSecondary,
-    outline = CharcoalBorder,
-    error = DangerCrimson,
-    onError = Color.White
-)
-
-private val Project90LightColorScheme = darkColorScheme( // Keep badass dark aesthetic even in light mode
-    primary = NeonFlame,
-    onPrimary = Color.White,
-    primaryContainer = FlameDark,
-    onPrimaryContainer = Color.White,
-    secondary = GoldenStreak,
-    onSecondary = Color.Black,
-    secondaryContainer = CharcoalCardElevated,
-    onSecondaryContainer = GoldenStreakLight,
-    tertiary = CyberCyan,
-    onTertiary = Color.Black,
-    background = ObsidianBlack,
-    onBackground = TextPrimary,
-    surface = CharcoalDark,
-    onSurface = TextPrimary,
-    surfaceVariant = CharcoalCard,
-    onSurfaceVariant = TextSecondary,
-    outline = CharcoalBorder,
+    outline = CardBorder,
     error = DangerCrimson,
     onError = Color.White
 )
@@ -59,7 +37,7 @@ fun Project90Theme(
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
-        colorScheme = Project90DarkColorScheme,
+        colorScheme = Project90LightColorScheme,
         typography = Typography,
         content = content
     )

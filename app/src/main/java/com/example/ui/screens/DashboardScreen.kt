@@ -24,10 +24,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.DirectionsRun
-import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.LocalDrink
 import androidx.compose.material.icons.filled.Nightlight
 import androidx.compose.material.icons.filled.Savings
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Spa
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -48,22 +49,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.data.local.entity.DailyLogEntity
 import com.example.data.local.entity.HabitCategory
-import com.example.data.local.entity.HabitEntity
 import com.example.ui.components.Circular90DaysProgress
 import com.example.ui.components.HabitChecklistItem
-import com.example.ui.theme.CharcoalCard
-import com.example.ui.theme.CharcoalCardElevated
-import com.example.ui.theme.CyberCyan
+import com.example.ui.theme.CardBorder
+import com.example.ui.theme.CardWhite
 import com.example.ui.theme.DangerCrimson
+import com.example.ui.theme.EcoBackground
+import com.example.ui.theme.ForestGreen
 import com.example.ui.theme.GoldenStreak
-import com.example.ui.theme.NeonFlame
-import com.example.ui.theme.ObsidianBlack
+import com.example.ui.theme.LeafGreen
+import com.example.ui.theme.MarineAqua
+import com.example.ui.theme.MintLight
+import com.example.ui.theme.MintSurface
 import com.example.ui.theme.SuccessGreen
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.WarmAmber
 import com.example.ui.viewmodel.AppTab
 import com.example.ui.viewmodel.Project90ViewModel
 
@@ -94,12 +100,12 @@ fun DashboardScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(ObsidianBlack)
+            .background(EcoBackground)
             .testTag("dashboard_screen"),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Hero Header
+        // Hero Header (Clean, Inspiring & Modern)
         item {
             Column(
                 modifier = Modifier.fillMaxWidth()
@@ -109,55 +115,123 @@ fun DashboardScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 8.dp)
+                    ) {
                         Text(
                             text = "PROJECT 90 DAYS",
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontWeight = FontWeight.Black,
-                                letterSpacing = 1.5.sp
+                                letterSpacing = 1.2.sp
                             ),
-                            color = NeonFlame
+                            color = ForestGreen,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         Text(
                             text = "Lột xác hoàn toàn trước Tháng 2",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = TextSecondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
 
-                    // Hardcore Badge
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(NeonFlame.copy(alpha = 0.2f))
-                            .border(1.dp, NeonFlame, RoundedCornerShape(20.dp))
-                            .padding(horizontal = 12.dp, vertical = 6.dp)
-                    ) {
-                        Text(
-                            text = "EXTREME",
-                            color = NeonFlame,
-                            fontWeight = FontWeight.Black,
-                            fontSize = 11.sp
-                        )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        // Settings Button
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(38.dp)
+                                .clip(CircleShape)
+                                .background(CardWhite)
+                                .border(1.dp, CardBorder, CircleShape)
+                                .clickable { onNavigateToTab(AppTab.SETTINGS) }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "Cài đặt & Chuông",
+                                tint = ForestGreen,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        // Discipline Badge (Eco-Green Pill)
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(MintLight)
+                                .border(1.dp, ForestGreen.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
+                                .padding(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                text = "KỶ LUẬT",
+                                color = ForestGreen,
+                                fontWeight = FontWeight.Black,
+                                fontSize = 11.sp,
+                                maxLines = 1,
+                                softWrap = false
+                            )
+                        }
                     }
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Inspiring Eco Impact Banner
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(MintLight)
+                        .border(1.dp, ForestGreen.copy(alpha = 0.2f), RoundedCornerShape(14.dp))
+                        .padding(horizontal = 14.dp, vertical = 10.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Spa,
+                        contentDescription = "Impact",
+                        tint = ForestGreen,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "Mỗi hành động nhỏ hôm nay tạo nên sự bứt phá phi thường ngày mai.",
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Medium),
+                        color = ForestGreen,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
         }
 
-        // 90-Day Circular Countdown Ring
+        // 90-Day Circular Countdown Ring Card
         item {
-            Box(
-                contentAlignment = Alignment.Center,
+            Card(
+                colors = CardDefaults.cardColors(containerColor = CardWhite),
+                shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
+                    .border(1.dp, CardBorder, RoundedCornerShape(20.dp))
             ) {
-                Circular90DaysProgress(
-                    dayNumber = summary.dayNumber,
-                    totalDays = summary.totalDays,
-                    daysRemainingToFeb = summary.daysRemainingToFeb,
-                    currentStreak = summary.currentStreak
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp)
+                ) {
+                    Circular90DaysProgress(
+                        dayNumber = summary.dayNumber,
+                        totalDays = summary.totalDays,
+                        daysRemainingToFeb = summary.daysRemainingToFeb,
+                        currentStreak = summary.currentStreak
+                    )
+                }
             }
         }
 
@@ -166,11 +240,11 @@ fun DashboardScreen(
             if (summary.streakWarning) {
                 val remainingHabits = summary.totalDailyHabitsCount - summary.completedTodayCount
                 Card(
-                    colors = CardDefaults.cardColors(containerColor = DangerCrimson.copy(alpha = 0.15f)),
+                    colors = CardDefaults.cardColors(containerColor = DangerCrimson.copy(alpha = 0.08f)),
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, DangerCrimson.copy(alpha = 0.6f), RoundedCornerShape(16.dp))
+                        .border(1.dp, DangerCrimson.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
                         .testTag("streak_warning_card")
                 ) {
                     Row(
@@ -203,18 +277,18 @@ fun DashboardScreen(
                             Text(
                                 text = "Còn $remainingHabits mục chưa hoàn thành hôm nay. Bỏ lỡ bất kỳ mục nào sẽ lập tức reset chuỗi ${summary.currentStreak} ngày về 0!",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Color.White.copy(alpha = 0.9f)
+                                color = TextPrimary
                             )
                         }
                     }
                 }
             } else {
                 Card(
-                    colors = CardDefaults.cardColors(containerColor = SuccessGreen.copy(alpha = 0.15f)),
+                    colors = CardDefaults.cardColors(containerColor = MintLight),
                     shape = RoundedCornerShape(16.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .border(1.dp, SuccessGreen.copy(alpha = 0.6f), RoundedCornerShape(16.dp))
+                        .border(1.dp, ForestGreen.copy(alpha = 0.2f), RoundedCornerShape(16.dp))
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -225,7 +299,7 @@ fun DashboardScreen(
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
-                                .background(SuccessGreen)
+                                .background(ForestGreen)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.DirectionsRun,
@@ -241,12 +315,12 @@ fun DashboardScreen(
                             Text(
                                 text = "MỤC TIÊU HÔM NAY ĐẠT HOÀN HẢO!",
                                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Black),
-                                color = SuccessGreen
+                                color = ForestGreen
                             )
                             Text(
-                                text = "Bạn đã hoàn thành toàn bộ checklist 7 hạng mục. Chuỗi kỷ luật tiếp tục tăng lên!",
+                                text = "Bạn đã hoàn thành toàn bộ checklist 7 hạng mục. Chuỗi kỷ luật tiếp tục vững chắc!",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Color.White.copy(alpha = 0.9f)
+                                color = TextSecondary
                             )
                         }
                     }
@@ -254,7 +328,7 @@ fun DashboardScreen(
             }
         }
 
-        // Quick Category Navigation Cards
+        // Quick Category Navigation Cards (Horizontal Row)
         item {
             Column {
                 Text(
@@ -263,7 +337,7 @@ fun DashboardScreen(
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp
                     ),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = TextPrimary
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 LazyRow(
@@ -274,7 +348,7 @@ fun DashboardScreen(
                             title = "Vận Động",
                             sub = "10k bước, Hít đất",
                             icon = Icons.Default.DirectionsRun,
-                            color = NeonFlame,
+                            color = ForestGreen,
                             onClick = { onNavigateToTab(AppTab.MOVEMENT) }
                         )
                     }
@@ -283,7 +357,7 @@ fun DashboardScreen(
                             title = "Dinh Dưỡng",
                             sub = "No Sugar, 2L Nước",
                             icon = Icons.Default.LocalDrink,
-                            color = CyberCyan,
+                            color = MarineAqua,
                             onClick = { onNavigateToTab(AppTab.NUTRITION) }
                         )
                     }
@@ -292,7 +366,7 @@ fun DashboardScreen(
                             title = "Detox & Ngủ",
                             sub = "Ngừng Cafe, 22:30",
                             icon = Icons.Default.Nightlight,
-                            color = GoldenStreak,
+                            color = WarmAmber,
                             onClick = { onNavigateToTab(AppTab.DIGITAL) }
                         )
                     }
@@ -310,7 +384,7 @@ fun DashboardScreen(
                             title = "Tài Chính",
                             sub = "Trích 10% Tiết kiệm",
                             icon = Icons.Default.Savings,
-                            color = SuccessGreen,
+                            color = LeafGreen,
                             onClick = { onNavigateToTab(AppTab.FINANCE) }
                         )
                     }
@@ -319,8 +393,17 @@ fun DashboardScreen(
                             title = "Phát Triển",
                             sub = "Đọc 20p, 3 dòng tối",
                             icon = Icons.Default.Book,
-                            color = GoldenStreak,
+                            color = ForestGreen,
                             onClick = { onNavigateToTab(AppTab.GROWTH) }
+                        )
+                    }
+                    item {
+                        QuickModuleCard(
+                            title = "Cài Đặt",
+                            sub = "Chuông & Quyền 24/7",
+                            icon = Icons.Default.Settings,
+                            color = ForestGreen,
+                            onClick = { onNavigateToTab(AppTab.SETTINGS) }
                         )
                     }
                 }
@@ -338,13 +421,13 @@ fun DashboardScreen(
                     Text(
                         text = "CHECKLIST KỶ LUẬT HÔM NAY",
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
-                        color = Color.White
+                        color = TextPrimary
                     )
 
                     Text(
                         text = "${summary.completedTodayCount} / ${summary.totalDailyHabitsCount} Đạt",
                         style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
-                        color = if (summary.completedTodayCount >= summary.totalDailyHabitsCount) SuccessGreen else GoldenStreak
+                        color = if (summary.completedTodayCount >= summary.totalDailyHabitsCount) SuccessGreen else WarmAmber
                     )
                 }
 
@@ -373,19 +456,19 @@ fun DashboardScreen(
                                 Text(
                                     text = label,
                                     fontSize = 12.sp,
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                                 )
                             },
                             colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = NeonFlame,
+                                selectedContainerColor = ForestGreen,
                                 selectedLabelColor = Color.White,
-                                containerColor = CharcoalCard,
-                                labelColor = MaterialTheme.colorScheme.onSurfaceVariant
+                                containerColor = CardWhite,
+                                labelColor = TextSecondary
                             ),
                             border = FilterChipDefaults.filterChipBorder(
                                 enabled = true,
                                 selected = isSelected,
-                                borderColor = if (isSelected) NeonFlame else Color(0xFF2C3446)
+                                borderColor = if (isSelected) ForestGreen else CardBorder
                             )
                         )
                     }
@@ -426,22 +509,23 @@ fun QuickModuleCard(
     modifier: Modifier = Modifier
 ) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = CharcoalCard),
-        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = CardWhite),
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         modifier = modifier
             .width(140.dp)
-            .border(1.dp, Color(0xFF282F3E), RoundedCornerShape(14.dp))
+            .border(1.dp, CardBorder, RoundedCornerShape(16.dp))
             .clickable { onClick() }
     ) {
         Column(
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(14.dp)
         ) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(38.dp)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(color.copy(alpha = 0.15f))
+                    .background(color.copy(alpha = 0.12f))
             ) {
                 Icon(
                     imageVector = icon,
@@ -454,12 +538,12 @@ fun QuickModuleCard(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                color = Color.White
+                color = TextPrimary
             )
             Text(
                 text = sub,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = TextSecondary,
                 fontSize = 11.sp,
                 maxLines = 1
             )

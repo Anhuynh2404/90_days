@@ -2,7 +2,6 @@ package com.example.ui.screens
 
 import android.content.Intent
 import android.provider.Settings
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,11 +23,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.Savings
 import androidx.compose.material.icons.filled.Settings
@@ -58,18 +55,24 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.data.local.entity.FinanceTransactionEntity
-import com.example.ui.theme.CharcoalCard
-import com.example.ui.theme.CharcoalCardElevated
-import com.example.ui.theme.CyberCyan
+import com.example.ui.theme.CardBorder
+import com.example.ui.theme.CardWhite
 import com.example.ui.theme.DangerCrimson
+import com.example.ui.theme.EcoBackground
+import com.example.ui.theme.ForestGreen
+import com.example.ui.theme.ForestGreenDark
 import com.example.ui.theme.GoldenStreak
-import com.example.ui.theme.NeonFlame
-import com.example.ui.theme.ObsidianBlack
+import com.example.ui.theme.LeafGreen
+import com.example.ui.theme.MarineAqua
+import com.example.ui.theme.MintLight
 import com.example.ui.theme.SuccessGreen
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.WarmAmber
 import com.example.ui.viewmodel.Project90ViewModel
 import java.text.NumberFormat
 import java.util.Locale
@@ -92,7 +95,7 @@ fun FinanceScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(ObsidianBlack)
+            .background(EcoBackground)
             .testTag("finance_screen"),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -104,30 +107,46 @@ fun FinanceScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 12.dp)
+                ) {
                     Text(
                         text = "MÔ-ĐUN TÀI CHÍNH",
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Black,
                             letterSpacing = 1.sp
                         ),
-                        color = NeonFlame
+                        color = ForestGreen
                     )
                     Text(
                         text = "Kỷ luật tiền bạc & tự động trích 10% tiết kiệm",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = TextSecondary
                     )
                 }
 
                 Button(
                     onClick = { showAddDialog = true },
-                    colors = ButtonDefaults.buttonColors(containerColor = NeonFlame),
-                    shape = RoundedCornerShape(12.dp)
+                    colors = ButtonDefaults.buttonColors(containerColor = ForestGreen),
+                    shape = RoundedCornerShape(12.dp),
+                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Thêm", modifier = Modifier.size(18.dp))
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Ghi Chép", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Default.Add, contentDescription = "Thêm", modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "Ghi Chép",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            maxLines = 1,
+                            softWrap = false
+                        )
+                    }
                 }
             }
         }
@@ -135,11 +154,12 @@ fun FinanceScreen(
         // 10% Savings Fund Hero Card
         item {
             Card(
-                colors = CardDefaults.cardColors(containerColor = CharcoalCardElevated),
+                colors = CardDefaults.cardColors(containerColor = MintLight),
                 shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.5.dp, GoldenStreak, RoundedCornerShape(20.dp))
+                    .border(1.dp, ForestGreen.copy(alpha = 0.25f), RoundedCornerShape(20.dp))
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
                     Row(
@@ -153,12 +173,12 @@ fun FinanceScreen(
                                 modifier = Modifier
                                     .size(44.dp)
                                     .clip(CircleShape)
-                                    .background(GoldenStreak.copy(alpha = 0.2f))
+                                    .background(ForestGreen.copy(alpha = 0.15f))
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Savings,
                                     contentDescription = "Savings",
-                                    tint = GoldenStreak,
+                                    tint = ForestGreen,
                                     modifier = Modifier.size(24.dp)
                                 )
                             }
@@ -167,12 +187,12 @@ fun FinanceScreen(
                                 Text(
                                     text = "QUỸ TIẾT KIỆM BẤT KHẢ XÂM PHẠM (10%)",
                                     style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Black),
-                                    color = GoldenStreak
+                                    color = ForestGreen
                                 )
                                 Text(
                                     text = "Nguyên tắc 'Pay Yourself First'",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = TextSecondary
                                 )
                             }
                         }
@@ -184,7 +204,7 @@ fun FinanceScreen(
                         text = "${formatter.format(totalSavings ?: 0L)} đ",
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White
+                        color = ForestGreenDark
                     )
 
                     Spacer(modifier = Modifier.height(6.dp))
@@ -192,7 +212,7 @@ fun FinanceScreen(
                     Text(
                         text = "Mỗi khi phát sinh giao dịch nhận lương, hệ thống tự động khóa 10% vào quỹ này trước khi người dùng thực hiện bất kỳ chi tiêu nào.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.85f),
+                        color = TextPrimary,
                         lineHeight = 17.sp
                     )
                 }
@@ -207,17 +227,18 @@ fun FinanceScreen(
             ) {
                 // Income Card
                 Card(
-                    colors = CardDefaults.cardColors(containerColor = CharcoalCard),
+                    colors = CardDefaults.cardColors(containerColor = CardWhite),
                     shape = RoundedCornerShape(16.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                     modifier = Modifier
                         .weight(1f)
-                        .border(1.dp, Color(0xFF2C3446), RoundedCornerShape(16.dp))
+                        .border(1.dp, CardBorder, RoundedCornerShape(16.dp))
                 ) {
                     Column(modifier = Modifier.padding(14.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Default.ArrowDownward, contentDescription = "Income", tint = SuccessGreen, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Tổng Thu Nhập", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("Tổng Thu Nhập", fontSize = 11.sp, color = TextSecondary)
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -231,17 +252,18 @@ fun FinanceScreen(
 
                 // Expense Card
                 Card(
-                    colors = CardDefaults.cardColors(containerColor = CharcoalCard),
+                    colors = CardDefaults.cardColors(containerColor = CardWhite),
                     shape = RoundedCornerShape(16.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                     modifier = Modifier
                         .weight(1f)
-                        .border(1.dp, Color(0xFF2C3446), RoundedCornerShape(16.dp))
+                        .border(1.dp, CardBorder, RoundedCornerShape(16.dp))
                 ) {
                     Column(modifier = Modifier.padding(14.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(Icons.Default.ArrowUpward, contentDescription = "Expense", tint = DangerCrimson, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("Tổng Chi Tiêu", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("Tổng Chi Tiêu", fontSize = 11.sp, color = TextSecondary)
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
@@ -258,11 +280,12 @@ fun FinanceScreen(
         // Notification Listener Service Automation Panel (TNEX & MB Bank)
         item {
             Card(
-                colors = CardDefaults.cardColors(containerColor = CharcoalCard),
+                colors = CardDefaults.cardColors(containerColor = CardWhite),
                 shape = RoundedCornerShape(18.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, CyberCyan.copy(alpha = 0.5f), RoundedCornerShape(18.dp))
+                    .border(1.dp, CardBorder, RoundedCornerShape(18.dp))
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Row(
@@ -276,12 +299,12 @@ fun FinanceScreen(
                                 modifier = Modifier
                                     .size(38.dp)
                                     .clip(RoundedCornerShape(10.dp))
-                                    .background(CyberCyan.copy(alpha = 0.15f))
+                                    .background(MintLight)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.NotificationsActive,
                                     contentDescription = "Notification Listener",
-                                    tint = CyberCyan,
+                                    tint = ForestGreen,
                                     modifier = Modifier.size(22.dp)
                                 )
                             }
@@ -290,12 +313,12 @@ fun FinanceScreen(
                                 Text(
                                     text = "ĐỌC BIẾN ĐỘNG SỐ DƯ TỰ ĐỘNG",
                                     style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                                    color = Color.White
+                                    color = TextPrimary
                                 )
                                 Text(
                                     text = "Hỗ trợ TNEX, MB Bank, VCB, Techcombank",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = CyberCyan,
+                                    color = ForestGreen,
                                     fontSize = 11.sp
                                 )
                             }
@@ -307,14 +330,14 @@ fun FinanceScreen(
                             modifier = Modifier
                                 .size(34.dp)
                                 .clip(CircleShape)
-                                .background(Color(0xFF242A38))
+                                .background(MintLight)
                                 .clickable {
                                     try {
                                         context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
                                     } catch (_: Exception) {}
                                 }
                         ) {
-                            Icon(Icons.Default.Settings, contentDescription = "Settings", tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(18.dp))
+                            Icon(Icons.Default.Settings, contentDescription = "Settings", tint = ForestGreen, modifier = Modifier.size(18.dp))
                         }
                     }
 
@@ -322,7 +345,7 @@ fun FinanceScreen(
                     Text(
                         text = "NotificationListenerService tự động đọc thông báo biến động số dư ngân hàng và ghi nhận vào sổ. Nhấn nút bên dưới để thử nghiệm thuật toán bóc tách:",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.85f),
+                        color = TextPrimary,
                         lineHeight = 17.sp
                     )
 
@@ -335,12 +358,14 @@ fun FinanceScreen(
                         OutlinedButton(
                             onClick = { viewModel.simulateBankNotification(isSalary = true, bank = "MB Bank") },
                             modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(10.dp)
+                            shape = RoundedCornerShape(10.dp),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
                         ) {
                             Text(
-                                text = "Test Lương MB Bank (+25tr)",
+                                text = "Test Lương MB (+25tr)",
                                 fontSize = 11.sp,
                                 color = SuccessGreen,
+                                fontWeight = FontWeight.Bold,
                                 maxLines = 1
                             )
                         }
@@ -348,12 +373,14 @@ fun FinanceScreen(
                         OutlinedButton(
                             onClick = { viewModel.simulateBankNotification(isSalary = false, bank = "TNEX") },
                             modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(10.dp)
+                            shape = RoundedCornerShape(10.dp),
+                            border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
                         ) {
                             Text(
                                 text = "Test Chi TNEX (-150k)",
                                 fontSize = 11.sp,
                                 color = DangerCrimson,
+                                fontWeight = FontWeight.Bold,
                                 maxLines = 1
                             )
                         }
@@ -370,7 +397,7 @@ fun FinanceScreen(
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
                 ),
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = TextPrimary
             )
         }
 
@@ -378,11 +405,12 @@ fun FinanceScreen(
         items(transactions, key = { it.id }) { tx ->
             val isIncome = tx.type == "INCOME"
             Card(
-                colors = CardDefaults.cardColors(containerColor = CharcoalCard),
+                colors = CardDefaults.cardColors(containerColor = CardWhite),
                 shape = RoundedCornerShape(14.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.dp, Color(0xFF262D3D), RoundedCornerShape(14.dp))
+                    .border(1.dp, CardBorder, RoundedCornerShape(14.dp))
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -391,13 +419,13 @@ fun FinanceScreen(
                         .fillMaxWidth()
                         .padding(14.dp)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f).padding(end = 8.dp)) {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .size(38.dp)
                                 .clip(RoundedCornerShape(10.dp))
-                                .background(if (isIncome) SuccessGreen.copy(alpha = 0.15f) else DangerCrimson.copy(alpha = 0.15f))
+                                .background(if (isIncome) SuccessGreen.copy(alpha = 0.15f) else DangerCrimson.copy(alpha = 0.12f))
                         ) {
                             Icon(
                                 imageVector = if (isIncome) Icons.Default.ArrowDownward else Icons.Default.ArrowUpward,
@@ -407,36 +435,43 @@ fun FinanceScreen(
                             )
                         }
                         Spacer(modifier = Modifier.width(12.dp))
-                        Column {
+                        Column(modifier = Modifier.weight(1f)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     text = tx.category,
                                     style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                                    color = Color.White
+                                    color = TextPrimary,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.weight(1f, fill = false)
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 Text(
                                     text = tx.bankSource,
                                     fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = CyberCyan,
+                                    color = ForestGreen,
+                                    maxLines = 1,
                                     modifier = Modifier
-                                        .background(CyberCyan.copy(alpha = 0.15f), RoundedCornerShape(4.dp))
+                                        .background(MintLight, RoundedCornerShape(4.dp))
                                         .padding(horizontal = 6.dp, vertical = 2.dp)
                                 )
                             }
                             Text(
                                 text = tx.description,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1
+                                color = TextSecondary,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                             if (tx.savingsAllocated > 0) {
                                 Text(
                                     text = "+ ${formatter.format(tx.savingsAllocated)}đ (10% vào quỹ tiết kiệm)",
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = GoldenStreak
+                                    color = WarmAmber,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
                         }
@@ -446,7 +481,9 @@ fun FinanceScreen(
                         text = (if (isIncome) "+" else "-") + " " + formatter.format(tx.amount) + " đ",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
-                        color = if (isIncome) SuccessGreen else DangerCrimson
+                        color = if (isIncome) SuccessGreen else DangerCrimson,
+                        maxLines = 1,
+                        softWrap = false
                     )
                 }
             }
@@ -472,7 +509,7 @@ fun FinanceScreen(
                 Text(
                     text = "Ghi Chép Thu Chi Mới",
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = ForestGreen
                 )
             },
             text = {
@@ -482,23 +519,23 @@ fun FinanceScreen(
                         Button(
                             onClick = { isIncome = false },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (!isIncome) DangerCrimson else Color(0xFF2C3446)
+                                containerColor = if (!isIncome) DangerCrimson else MintLight
                             ),
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text("Chi Tiêu", color = Color.White)
+                            Text("Chi Tiêu", color = if (!isIncome) Color.White else TextSecondary)
                         }
 
                         Button(
                             onClick = { isIncome = true },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (isIncome) SuccessGreen else Color(0xFF2C3446)
+                                containerColor = if (isIncome) SuccessGreen else MintLight
                             ),
                             shape = RoundedCornerShape(8.dp),
                             modifier = Modifier.weight(1f)
                         ) {
-                            Text("Thu Nhập", color = Color.White)
+                            Text("Thu Nhập", color = if (isIncome) Color.White else TextSecondary)
                         }
                     }
 
@@ -541,17 +578,17 @@ fun FinanceScreen(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(Color(0xFF202636), RoundedCornerShape(10.dp))
+                                .background(MintLight, RoundedCornerShape(10.dp))
                                 .padding(8.dp)
                         ) {
                             Column {
-                                Text("Khoản nhận lương?", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
-                                Text("Tự động trích 10% vào tiết kiệm", fontSize = 10.sp, color = GoldenStreak)
+                                Text("Khoản nhận lương?", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = ForestGreen)
+                                Text("Tự động trích 10% vào tiết kiệm", fontSize = 10.sp, color = WarmAmber)
                             }
                             Switch(
                                 checked = isSalary,
                                 onCheckedChange = { isSalary = it },
-                                colors = SwitchDefaults.colors(checkedThumbColor = GoldenStreak)
+                                colors = SwitchDefaults.colors(checkedThumbColor = ForestGreen, checkedTrackColor = MintLight)
                             )
                         }
                     }
@@ -573,17 +610,17 @@ fun FinanceScreen(
                             showAddDialog = false
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = NeonFlame)
+                    colors = ButtonDefaults.buttonColors(containerColor = ForestGreen)
                 ) {
                     Text("Lưu Giao Dịch", color = Color.White)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showAddDialog = false }) {
-                    Text("Hủy", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Hủy", color = TextSecondary)
                 }
             },
-            containerColor = CharcoalCardElevated
+            containerColor = CardWhite
         )
     }
 }

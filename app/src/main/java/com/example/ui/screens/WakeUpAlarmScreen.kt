@@ -37,7 +37,6 @@ import androidx.compose.material.icons.filled.AlarmOff
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CropFree
-import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -50,7 +49,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,14 +69,19 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.camera.ObjectAnalyzer
 import com.example.camera.WakeUpTarget
-import com.example.ui.theme.CharcoalCard
-import com.example.ui.theme.CharcoalCardElevated
-import com.example.ui.theme.CyberCyan
+import com.example.ui.theme.CardBorder
+import com.example.ui.theme.CardWhite
 import com.example.ui.theme.DangerCrimson
+import com.example.ui.theme.EcoBackground
+import com.example.ui.theme.ForestGreen
 import com.example.ui.theme.GoldenStreak
-import com.example.ui.theme.NeonFlame
-import com.example.ui.theme.ObsidianBlack
+import com.example.ui.theme.LeafGreen
+import com.example.ui.theme.MarineAqua
+import com.example.ui.theme.MintLight
 import com.example.ui.theme.SuccessGreen
+import com.example.ui.theme.TextPrimary
+import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.WarmAmber
 import com.example.ui.viewmodel.Project90ViewModel
 import java.util.concurrent.Executors
 
@@ -118,7 +121,7 @@ fun WakeUpAlarmScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(ObsidianBlack)
+            .background(EcoBackground)
             .testTag("wake_up_alarm_screen"),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -132,12 +135,12 @@ fun WakeUpAlarmScreen(
                         fontWeight = FontWeight.Black,
                         letterSpacing = 1.sp
                     ),
-                    color = NeonFlame
+                    color = ForestGreen
                 )
                 Text(
                     text = "Chuông hardcore chỉ tắt khi dùng Camera chụp đối chiếu đúng vật dụng",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = TextSecondary
                 )
             }
         }
@@ -146,14 +149,15 @@ fun WakeUpAlarmScreen(
         item {
             Card(
                 colors = CardDefaults.cardColors(
-                    containerColor = if (isRinging) DangerCrimson.copy(alpha = 0.25f) else CharcoalCard
+                    containerColor = if (isRinging) DangerCrimson.copy(alpha = 0.15f) else CardWhite
                 ),
                 shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
                         1.5.dp,
-                        if (isRinging) DangerCrimson else Color(0xFF2C3446),
+                        if (isRinging) DangerCrimson else CardBorder,
                         RoundedCornerShape(20.dp)
                     )
             ) {
@@ -169,12 +173,12 @@ fun WakeUpAlarmScreen(
                                 modifier = Modifier
                                     .size(46.dp)
                                     .clip(CircleShape)
-                                    .background(if (isRinging) DangerCrimson else NeonFlame.copy(alpha = 0.2f))
+                                    .background(if (isRinging) DangerCrimson else MintLight)
                             ) {
                                 Icon(
                                     imageVector = if (isRinging) Icons.Default.VolumeUp else Icons.Default.Alarm,
                                     contentDescription = "Alarm",
-                                    tint = if (isRinging) Color.White else NeonFlame,
+                                    tint = if (isRinging) Color.White else ForestGreen,
                                     modifier = Modifier.size(24.dp)
                                 )
                             }
@@ -183,12 +187,13 @@ fun WakeUpAlarmScreen(
                                 Text(
                                     text = if (isRinging) "CHUÔNG ĐANG RÉO INH ỎI!" else "LỊCH BÁO THỨC: 05:00 AM",
                                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Black),
-                                    color = if (isRinging) DangerCrimson else Color.White
+                                    color = if (isRinging) DangerCrimson else TextPrimary
                                 )
                                 Text(
                                     text = "Nhiệm vụ: Chụp ảnh ${wakeUpTarget.title} để tắt chuông",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = GoldenStreak
+                                    color = ForestGreen,
+                                    fontWeight = FontWeight.Bold
                                 )
                             }
                         }
@@ -199,7 +204,7 @@ fun WakeUpAlarmScreen(
                     Text(
                         text = "Không có nút 'Báo lại' (Snooze). Cơ chế bắt buộc bạn phải bật dậy, ra khỏi giường và cầm điện thoại đến đúng vị trí để quét vật thể xác thực.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.85f),
+                        color = TextPrimary,
                         lineHeight = 18.sp
                     )
 
@@ -218,7 +223,7 @@ fun WakeUpAlarmScreen(
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = if (isRinging) DangerCrimson else NeonFlame
+                                containerColor = if (isRinging) DangerCrimson else ForestGreen
                             ),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier.weight(1f)
@@ -232,7 +237,8 @@ fun WakeUpAlarmScreen(
                             Text(
                                 text = if (isRinging) "Tắt khẩn cấp" else "Test Kích Hoạt 5AM",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp
+                                fontSize = 12.sp,
+                                color = Color.White
                             )
                         }
                     }
@@ -249,7 +255,7 @@ fun WakeUpAlarmScreen(
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 0.5.sp
                     ),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = TextPrimary
                 )
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -260,15 +266,15 @@ fun WakeUpAlarmScreen(
                         val isSelected = target == wakeUpTarget
                         Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(if (isSelected) NeonFlame else CharcoalCard)
-                                .border(1.dp, if (isSelected) NeonFlame else Color(0xFF2C3446), RoundedCornerShape(12.dp))
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(if (isSelected) ForestGreen else CardWhite)
+                                .border(1.dp, if (isSelected) ForestGreen else CardBorder, RoundedCornerShape(14.dp))
                                 .clickable { viewModel.setWakeUpTarget(target) }
                                 .padding(horizontal = 14.dp, vertical = 8.dp)
                         ) {
                             Text(
                                 text = target.title,
-                                color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface,
+                                color = if (isSelected) Color.White else TextPrimary,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                                 fontSize = 12.sp
                             )
@@ -280,7 +286,7 @@ fun WakeUpAlarmScreen(
                 Text(
                     text = "Hướng dẫn: ${wakeUpTarget.hint}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = CyberCyan,
+                    color = ForestGreen,
                     fontSize = 11.sp
                 )
             }
@@ -289,11 +295,12 @@ fun WakeUpAlarmScreen(
         // CameraX Viewfinder & Classification Screen
         item {
             Card(
-                colors = CardDefaults.cardColors(containerColor = CharcoalCardElevated),
+                colors = CardDefaults.cardColors(containerColor = CardWhite),
                 shape = RoundedCornerShape(20.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(1.5.dp, if (classification?.isMatch == true) SuccessGreen else CyberCyan, RoundedCornerShape(20.dp))
+                    .border(1.5.dp, if (classification?.isMatch == true) SuccessGreen else CardBorder, RoundedCornerShape(20.dp))
             ) {
                 Column(modifier = Modifier.padding(14.dp)) {
                     Text(
@@ -302,7 +309,7 @@ fun WakeUpAlarmScreen(
                             fontWeight = FontWeight.Black,
                             letterSpacing = 1.sp
                         ),
-                        color = CyberCyan
+                        color = ForestGreen
                     )
 
                     Spacer(modifier = Modifier.height(10.dp))
@@ -314,7 +321,7 @@ fun WakeUpAlarmScreen(
                                 .fillMaxWidth()
                                 .height(260.dp)
                                 .clip(RoundedCornerShape(16.dp))
-                                .background(Color(0xFF141822))
+                                .background(MintLight)
                                 .padding(16.dp)
                         ) {
                             Column(
@@ -324,26 +331,26 @@ fun WakeUpAlarmScreen(
                                 Icon(
                                     imageVector = Icons.Default.CameraAlt,
                                     contentDescription = "Camera Permission",
-                                    tint = NeonFlame,
+                                    tint = ForestGreen,
                                     modifier = Modifier.size(48.dp)
                                 )
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text(
                                     text = "Yêu cầu quyền truy cập Camera",
                                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                                    color = Color.White
+                                    color = TextPrimary
                                 )
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Text(
                                     text = "Để quét và phân loại ảnh bồn rửa mặt hoặc cốc nước để tắt chuông.",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    color = TextSecondary,
                                     textAlign = TextAlign.Center
                                 )
                                 Spacer(modifier = Modifier.height(14.dp))
                                 Button(
                                     onClick = { permissionLauncher.launch(Manifest.permission.CAMERA) },
-                                    colors = ButtonDefaults.buttonColors(containerColor = NeonFlame),
+                                    colors = ButtonDefaults.buttonColors(containerColor = ForestGreen),
                                     shape = RoundedCornerShape(10.dp)
                                 ) {
                                     Text("Cấp Quyền Camera", color = Color.White)
@@ -411,7 +418,7 @@ fun WakeUpAlarmScreen(
                                         .size(160.dp)
                                         .border(
                                             2.dp,
-                                            if (classification?.isMatch == true) SuccessGreen else CyberCyan.copy(alpha = 0.7f),
+                                            if (classification?.isMatch == true) SuccessGreen else ForestGreen.copy(alpha = 0.8f),
                                             RoundedCornerShape(16.dp)
                                         )
                                 )
@@ -460,14 +467,14 @@ fun WakeUpAlarmScreen(
                             Text(
                                 text = "Phân tích: ${classification?.detectedTarget ?: wakeUpTarget.title}",
                                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                                color = Color.White
+                                color = TextPrimary
                             )
 
                             Text(
                                 text = "Độ khớp: ${(confidence * 100).toInt()}%",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = if (isMatched) SuccessGreen else GoldenStreak
+                                color = if (isMatched) SuccessGreen else WarmAmber
                             )
                         }
 
@@ -478,15 +485,15 @@ fun WakeUpAlarmScreen(
                                 .fillMaxWidth()
                                 .height(8.dp)
                                 .clip(RoundedCornerShape(4.dp)),
-                            color = if (isMatched) SuccessGreen else NeonFlame,
-                            trackColor = Color(0xFF202636)
+                            color = if (isMatched) SuccessGreen else ForestGreen,
+                            trackColor = Color(0xFFE8EFE9)
                         )
 
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = classification?.details ?: "Hướng camera về phía vật dụng, giữ cố định 1-2 giây trong khung hình trung tâm.",
                             fontSize = 11.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = TextSecondary
                         )
                     }
                 }
