@@ -26,4 +26,7 @@ interface DailyLogDao {
 
     @Query("SELECT COUNT(*) FROM daily_logs WHERE dateEpochDay = :dateEpochDay AND isCompleted = 1")
     fun getCompletedCountForDate(dateEpochDay: Long): Flow<Int>
+
+    @Query("DELETE FROM daily_logs")
+    suspend fun deleteAllLogs()
 }

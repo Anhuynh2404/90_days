@@ -52,7 +52,7 @@ fun Circular90DaysProgress(
     currentStreak: Int,
     modifier: Modifier = Modifier
 ) {
-    val progress = (dayNumber.toFloat() / totalDays.toFloat()).coerceIn(0f, 1f)
+    val progress = if (dayNumber <= 0) 0f else (dayNumber.toFloat() / totalDays.toFloat()).coerceIn(0f, 1f)
     val animatedProgress by animateFloatAsState(
         targetValue = progress,
         animationSpec = tween(durationMillis = 1000),
@@ -83,19 +83,21 @@ fun Circular90DaysProgress(
             )
 
             // Lush vibrant progress arc (Forest Green -> Leaf Green -> Warm Amber)
-            drawArc(
-                brush = Brush.sweepGradient(
-                    0.0f to ForestGreen,
-                    0.6f to LeafGreen,
-                    1.0f to GoldenStreak
-                ),
-                startAngle = -90f,
-                sweepAngle = 360f * animatedProgress,
-                useCenter = false,
-                topLeft = topLeft,
-                size = arcSize,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
-            )
+            if (animatedProgress > 0f) {
+                drawArc(
+                    brush = Brush.sweepGradient(
+                        0.0f to ForestGreen,
+                        0.6f to LeafGreen,
+                        1.0f to GoldenStreak
+                    ),
+                    startAngle = -90f,
+                    sweepAngle = 360f * animatedProgress,
+                    useCenter = false,
+                    topLeft = topLeft,
+                    size = arcSize,
+                    style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                )
+            }
         }
 
         // Inner stats
@@ -128,34 +130,65 @@ fun Circular90DaysProgress(
 
             Spacer(modifier = Modifier.height(6.dp))
 
-            Text(
-                text = "NGÀY $dayNumber",
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Black,
-                    letterSpacing = 1.sp
-                ),
-                color = ForestGreenDark
-            )
-            Text(
-                text = "trên $totalDays ngày",
-                style = MaterialTheme.typography.bodySmall,
-                color = TextSecondary
-            )
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            // Countdown to February
-            Box(
-                modifier = Modifier
-                    .background(MintLight, RoundedCornerShape(8.dp))
-                    .padding(horizontal = 10.dp, vertical = 4.dp)
-            ) {
+            if (dayNumber == 0) {
                 Text(
-                    text = "Còn $daysRemainingToFeb ngày đến T2",
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = "KHỞI ĐỘNG",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Black,
+                        letterSpacing = 1.sp
+                    ),
+                    color = ForestGreenDark
+                )
+                Text(
+                    text = "Bắt đầu ngày mai (07/11)",
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
                     color = ForestGreen
                 )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Box(
+                    modifier = Modifier
+                        .background(MintLight, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = "90 ngày bứt phá trước T2",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = ForestGreen
+                    )
+                }
+            } else {
+                Text(
+                    text = "NGÀY $dayNumber",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Black,
+                        letterSpacing = 1.sp
+                    ),
+                    color = ForestGreenDark
+                )
+                Text(
+                    text = "trên $totalDays ngày",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextSecondary
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                // Countdown to February
+                Box(
+                    modifier = Modifier
+                        .background(MintLight, RoundedCornerShape(8.dp))
+                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        text = "Còn $daysRemainingToFeb ngày đến T2",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = ForestGreen
+                    )
+                }
             }
         }
     }

@@ -117,14 +117,20 @@ class Project90ViewModel(application: Application) : AndroidViewModel(applicatio
         val completedCount = logs.count { it.isCompleted }
         val totalDaily = if (dailyHabits.isNotEmpty()) dailyHabits.size else 13
 
-        val startDay = u?.startDateEpochDay ?: (todayEpochDay - 10)
-        val targetDay = u?.targetDateEpochDay ?: (todayEpochDay + 80)
+        val officialStartEpoch = LocalDate.of(2026, 11, 7).toEpochDay()
+        val startDay = u?.startDateEpochDay ?: officialStartEpoch
+        val targetDay = u?.targetDateEpochDay ?: (startDay + 90)
 
-        val daysIntoJourney = ((todayEpochDay - startDay) + 1).toInt().coerceIn(1, 90)
+        val diffFromStart = (todayEpochDay - startDay).toInt()
+        val daysIntoJourney = if (diffFromStart < 0) {
+            0
+        } else {
+            (diffFromStart + 1).coerceIn(1, 90)
+        }
         val remaining = (targetDay - todayEpochDay).coerceAtLeast(0)
-        val progress = (daysIntoJourney / 90f).coerceIn(0f, 1f)
+        val progress = if (daysIntoJourney <= 0) 0f else (daysIntoJourney / 90f).coerceIn(0f, 1f)
 
-        val hasStreakRisk = completedCount < totalDaily
+        val hasStreakRisk = daysIntoJourney > 0 && completedCount < totalDaily
 
         DashboardSummary(
             dayNumber = daysIntoJourney,
@@ -134,7 +140,7 @@ class Project90ViewModel(application: Application) : AndroidViewModel(applicatio
             completedTodayCount = completedCount,
             totalDailyHabitsCount = totalDaily,
             streakWarning = hasStreakRisk,
-            currentStreak = u?.currentStreak ?: 7
+            currentStreak = u?.currentStreak ?: 0
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DashboardSummary())
 

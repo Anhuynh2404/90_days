@@ -182,25 +182,17 @@ class HabitRepository(
             habitDao.insertAll(defaultHabits)
         }
 
-        // Initialize User with 90-day countdown to February 1st
-        val existingUser = userDao.getUser().firstOrNull()
-        if (existingUser == null) {
-            val today = LocalDate.now()
-            // Target is February 1st of upcoming year (or next February)
-            val currentYear = today.year
-            val targetFeb = if (today.month.value >= Month.FEBRUARY.value) {
-                LocalDate.of(currentYear + 1, Month.FEBRUARY, 1)
-            } else {
-                LocalDate.of(currentYear, Month.FEBRUARY, 1)
-            }
-            // 90 days before February 1st
-            val calculatedStart = targetFeb.minusDays(90)
+        // Official Start Date: Ngày mai (07/11/2026) mới chính thức là Ngày 1
+        val officialStartDate = LocalDate.of(2026, 11, 7)
+        val targetDate = officialStartDate.plusDays(90) // February 5, 2027
 
+        val existingUser = userDao.getUser().firstOrNull()
+        if (existingUser == null || existingUser.startDateEpochDay != officialStartDate.toEpochDay()) {
             val initialUser = UserEntity(
                 id = 1,
                 name = "Kẻ Kỷ Luật Thép",
-                startDateEpochDay = calculatedStart.toEpochDay(),
-                targetDateEpochDay = targetFeb.toEpochDay(),
+                startDateEpochDay = officialStartDate.toEpochDay(),
+                targetDateEpochDay = targetDate.toEpochDay(),
                 currentStreak = 0,
                 longestStreak = 0,
                 lastCompletedDateEpochDay = -1L,
@@ -209,7 +201,26 @@ class HabitRepository(
                 totalExpense = 0L
             )
             userDao.insertOrUpdate(initialUser)
+            dailyLogDao.deleteAllLogs()
         }
+    }
+
+    suspend fun resetOfficialStartDate(newStartDate: LocalDate = LocalDate.of(2026, 11, 7)) {
+        val target = newStartDate.plusDays(90)
+        val resetUser = UserEntity(
+            id = 1,
+            name = "Kẻ Kỷ Luật Thép",
+            startDateEpochDay = newStartDate.toEpochDay(),
+            targetDateEpochDay = target.toEpochDay(),
+            currentStreak = 0,
+            longestStreak = 0,
+            lastCompletedDateEpochDay = -1L,
+            totalSavings = 0L,
+            totalIncome = 0L,
+            totalExpense = 0L
+        )
+        userDao.insertOrUpdate(resetUser)
+        dailyLogDao.deleteAllLogs()
     }
 
     suspend fun setHabitProgress(dateEpochDay: Long, habitId: String, completed: Boolean, progressVal: Int) {

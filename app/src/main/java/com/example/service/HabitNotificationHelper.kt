@@ -102,9 +102,25 @@ object HabitNotificationHelper {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val collapsedTitle = if (dayNumber == 0) {
+            "PROJECT 90 • KHỞI ĐỘNG (Bắt đầu 07/11)"
+        } else {
+            "PROJECT 90 • NGÀY $dayNumber/$totalDays"
+        }
+        val expandedTitle = if (dayNumber == 0) {
+            "PROJECT 90 • KHỞI ĐỘNG (BẮT ĐẦU 07/11)"
+        } else {
+            "PROJECT 90 • NGÀY $dayNumber / $totalDays"
+        }
+        val countdownText = if (dayNumber == 0) {
+            "Ngày mai chính thức bắt đầu 90 ngày bứt phá"
+        } else {
+            "Còn $daysRemainingToFeb ngày đếm ngược đến Tháng 2"
+        }
+
         // 1. Collapsed RemoteViews
         val collapsedViews = RemoteViews(context.packageName, R.layout.notification_dashboard_collapsed).apply {
-            setTextViewText(R.id.notif_collapsed_title, "PROJECT 90 • NGÀY $dayNumber/$totalDays")
+            setTextViewText(R.id.notif_collapsed_title, collapsedTitle)
             setTextViewText(R.id.notif_collapsed_streak, "🔥 ${currentStreak}N")
             setProgressBar(R.id.notif_collapsed_progressbar, 100, percent, false)
             setTextViewText(R.id.notif_collapsed_progress_text, "$completedCount/$totalCount Đạt ($percent%)")
@@ -120,8 +136,8 @@ object HabitNotificationHelper {
 
         // 2. Expanded RemoteViews (Command Center Dashboard)
         val expandedViews = RemoteViews(context.packageName, R.layout.notification_dashboard_expanded).apply {
-            setTextViewText(R.id.notif_expanded_day, "PROJECT 90 • NGÀY $dayNumber / $totalDays")
-            setTextViewText(R.id.notif_expanded_countdown, "Còn $daysRemainingToFeb ngày đếm ngược đến Tháng 2")
+            setTextViewText(R.id.notif_expanded_day, expandedTitle)
+            setTextViewText(R.id.notif_expanded_countdown, countdownText)
             setTextViewText(R.id.notif_expanded_streak, "🔥 $currentStreak Ngày Chuỗi")
 
             setTextViewText(R.id.notif_expanded_progress_label, "$completedCount / $totalCount Mục ($percent%)")
@@ -232,13 +248,15 @@ object HabitNotificationHelper {
                     log?.isCompleted != true
                 }
 
-                val startDay = user?.startDateEpochDay ?: (todayEpochDay - 10)
-                val targetDay = user?.targetDateEpochDay ?: (todayEpochDay + 80)
-                val dayNumber = ((todayEpochDay - startDay) + 1).toInt().coerceIn(1, 90)
+                val officialStartEpoch = LocalDate.of(2026, 11, 7).toEpochDay()
+                val startDay = user?.startDateEpochDay ?: officialStartEpoch
+                val targetDay = user?.targetDateEpochDay ?: (startDay + 90)
+                val diffFromStart = (todayEpochDay - startDay).toInt()
+                val dayNumber = if (diffFromStart < 0) 0 else (diffFromStart + 1).coerceIn(1, 90)
                 val daysRemaining = (targetDay - todayEpochDay).coerceAtLeast(0)
 
                 val completedCount = dailyHabits.size - pendingHabits.size
-                val currentStreak = user?.currentStreak ?: 7
+                val currentStreak = user?.currentStreak ?: 0
                 val isCompletedAll = pendingHabits.isEmpty() && dailyHabits.isNotEmpty()
 
                 // Key metrics
