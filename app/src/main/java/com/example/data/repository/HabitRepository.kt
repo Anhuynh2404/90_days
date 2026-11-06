@@ -201,66 +201,15 @@ class HabitRepository(
                 name = "Kẻ Kỷ Luật Thép",
                 startDateEpochDay = calculatedStart.toEpochDay(),
                 targetDateEpochDay = targetFeb.toEpochDay(),
-                currentStreak = 7,
-                longestStreak = 14,
-                lastCompletedDateEpochDay = today.minusDays(1).toEpochDay(),
-                totalSavings = 2500000L,
-                totalIncome = 25000000L,
-                totalExpense = 8200000L
+                currentStreak = 0,
+                longestStreak = 0,
+                lastCompletedDateEpochDay = -1L,
+                totalSavings = 0L,
+                totalIncome = 0L,
+                totalExpense = 0L
             )
             userDao.insertOrUpdate(initialUser)
-
-            // Seed sample initial transactions if empty
-            val initialTrans = listOf(
-                FinanceTransactionEntity(
-                    dateEpochDay = today.minusDays(3).toEpochDay(),
-                    amount = 25000000L,
-                    type = "INCOME",
-                    category = "Lương",
-                    bankSource = "MB Bank",
-                    savingsAllocated = 2500000L,
-                    description = "Lương tháng chuyển khoản - Tự động trích 10% tiết kiệm"
-                ),
-                FinanceTransactionEntity(
-                    dateEpochDay = today.minusDays(2).toEpochDay(),
-                    amount = 450000L,
-                    type = "EXPENSE",
-                    category = "Dinh dưỡng",
-                    bankSource = "TNEX",
-                    savingsAllocated = 0L,
-                    description = "Mua ức gà, trứng và rau xanh tuần"
-                ),
-                FinanceTransactionEntity(
-                    dateEpochDay = today.minusDays(1).toEpochDay(),
-                    amount = 250000L,
-                    type = "EXPENSE",
-                    category = "Tập luyện",
-                    bankSource = "TNEX",
-                    savingsAllocated = 0L,
-                    description = "Tiền sân bóng đá giao hữu"
-                )
-            )
-            initialTrans.forEach { financeDao.insertTransaction(it) }
-
-            // Seed today's sample progress
-            seedInitialLogsForDate(today.toEpochDay())
         }
-    }
-
-    private suspend fun seedInitialLogsForDate(dateEpochDay: Long) {
-        val seed = listOf(
-            DailyLogEntity(dateEpochDay = dateEpochDay, habitId = "pedometer_10k", isCompleted = false, progressValue = 6840),
-            DailyLogEntity(dateEpochDay = dateEpochDay, habitId = "pushups_50", isCompleted = true, progressValue = 50),
-            DailyLogEntity(dateEpochDay = dateEpochDay, habitId = "squats_100", isCompleted = true, progressValue = 100),
-            DailyLogEntity(dateEpochDay = dateEpochDay, habitId = "cold_shower", isCompleted = true, progressValue = 1),
-            DailyLogEntity(dateEpochDay = dateEpochDay, habitId = "no_sugar", isCompleted = true, progressValue = 1),
-            DailyLogEntity(dateEpochDay = dateEpochDay, habitId = "water_2l", isCompleted = false, progressValue = 1500),
-            DailyLogEntity(dateEpochDay = dateEpochDay, habitId = "caffeine_curfew", isCompleted = true, progressValue = 1),
-            DailyLogEntity(dateEpochDay = dateEpochDay, habitId = "alarm_5am_camera", isCompleted = true, progressValue = 1),
-            DailyLogEntity(dateEpochDay = dateEpochDay, habitId = "reading_20min", isCompleted = false, progressValue = 12),
-            DailyLogEntity(dateEpochDay = dateEpochDay, habitId = "journal_3lines", isCompleted = false, progressValue = 0)
-        )
-        seed.forEach { dailyLogDao.upsertLog(it) }
     }
 
     suspend fun setHabitProgress(dateEpochDay: Long, habitId: String, completed: Boolean, progressVal: Int) {

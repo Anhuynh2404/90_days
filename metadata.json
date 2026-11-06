@@ -1,6 +1,8 @@
 {
   "name": "Project 90",
-  "description": "Extreme 90-day habit transformation tracker before February with movement, nutrition, digital detox, 5 AM hardcore camera alarm, finance, and self-growth.",
+  "description": "Project 90 (v1.0.0) - Ứng dụng theo dõi thói quen cực đoan & kỷ luật thép 90 ngày bứt phá trước tháng Hai. Tích hợp đếm bước chân, dinh dưỡng No Sugar, cai nghiện điện thoại, chuông báo thức 5AM AI CameraX, tự động trích 10% tiết kiệm và bảng thông báo Dashboard 24/7.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

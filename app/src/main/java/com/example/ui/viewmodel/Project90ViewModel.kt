@@ -215,33 +215,6 @@ class Project90ViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun simulateBankNotification(isSalary: Boolean, bank: String) {
-        val sample = if (isSalary) {
-            BankNotificationListenerService.parseBankMessage(
-                title = "$bank Thông Báo Biến Động Số Dư",
-                body = "Tài khoản 90DAYS nhận +25.000.000 VND từ CTY TECH. ND: Chuyen luong thang 11. So du moi: 48.200.000 VND",
-                packageName = if (bank == "TNEX") "com.msb.tnex" else "com.mbmobile"
-            )
-        } else {
-            BankNotificationListenerService.parseBankMessage(
-                title = "$bank Biến Động Số Dư",
-                body = "Tài khoản 90DAYS thanh toan -150.000 VND tai Highlands Coffee. ND: Ca phe sang tap trung lam viec",
-                packageName = if (bank == "TNEX") "com.msb.tnex" else "com.mbmobile"
-            )
-        }
-
-        if (sample != null) {
-            addTransaction(
-                amount = sample.amount,
-                type = sample.type,
-                category = sample.category,
-                bankSource = sample.bankName,
-                description = sample.description,
-                isSalary = sample.isSalary
-            )
-        }
-    }
-
     // Alarm Sound & Vibration Settings
     private val _selectedTone = MutableStateFlow(alarmSoundManager.selectedTone)
     val selectedTone: StateFlow<AlarmToneType> = _selectedTone.asStateFlow()

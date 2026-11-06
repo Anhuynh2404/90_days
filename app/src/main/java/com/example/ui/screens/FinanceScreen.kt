@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
@@ -343,7 +344,7 @@ fun FinanceScreen(
 
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
-                        text = "NotificationListenerService tự động đọc thông báo biến động số dư ngân hàng và ghi nhận vào sổ. Nhấn nút bên dưới để thử nghiệm thuật toán bóc tách:",
+                        text = "NotificationListenerService tự động lắng nghe và phân tích thông báo nhận tiền / chi tiêu từ TNEX, MB Bank, VCB, Techcombank. Khi nhận lương, hệ thống sẽ tự động bóc tách và khóa ngay 10% vào Quỹ Tiết Kiệm.",
                         style = MaterialTheme.typography.bodySmall,
                         color = TextPrimary,
                         lineHeight = 17.sp
@@ -351,39 +352,24 @@ fun FinanceScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    Button(
+                        onClick = {
+                            try {
+                                context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+                            } catch (_: Exception) {}
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = ForestGreen),
+                        shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        OutlinedButton(
-                            onClick = { viewModel.simulateBankNotification(isSalary = true, bank = "MB Bank") },
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(10.dp),
-                            border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
-                        ) {
-                            Text(
-                                text = "Test Lương MB (+25tr)",
-                                fontSize = 11.sp,
-                                color = SuccessGreen,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1
-                            )
-                        }
-
-                        OutlinedButton(
-                            onClick = { viewModel.simulateBankNotification(isSalary = false, bank = "TNEX") },
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(10.dp),
-                            border = androidx.compose.foundation.BorderStroke(1.dp, CardBorder)
-                        ) {
-                            Text(
-                                text = "Test Chi TNEX (-150k)",
-                                fontSize = 11.sp,
-                                color = DangerCrimson,
-                                fontWeight = FontWeight.Bold,
-                                maxLines = 1
-                            )
-                        }
+                        Icon(Icons.Default.NotificationsActive, contentDescription = null, tint = Color.White, modifier = Modifier.size(16.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Bật Quyền Tự Động Ghi Sổ Trong Cài Đặt",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
                     }
                 }
             }
@@ -399,6 +385,47 @@ fun FinanceScreen(
                 ),
                 color = TextPrimary
             )
+        }
+
+        if (transactions.isEmpty()) {
+            item {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = CardWhite),
+                    shape = RoundedCornerShape(14.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(1.dp, CardBorder, RoundedCornerShape(14.dp))
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AccountBalanceWallet,
+                            contentDescription = null,
+                            tint = TextSecondary.copy(alpha = 0.5f),
+                            modifier = Modifier.size(40.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Chưa có giao dịch thu chi nào",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            color = TextPrimary
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Bấm nút 'Ghi Chép' phía trên hoặc cấp quyền đọc thông báo ngân hàng để tự động ghi nhận.",
+                            fontSize = 12.sp,
+                            color = TextSecondary,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
+                    }
+                }
+            }
         }
 
         // Transactions list
