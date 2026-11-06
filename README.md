@@ -1,4 +1,4 @@
-# 🌿 Project 90 (v1.0.0) — Kỷ Luật Thép 90 Ngày Lột Xác Hoàn Toàn
+# 🌿 Project 90 (v1.0.0)
 
 > **"Kỷ luật là cầu nối giữa mục tiêu và thành tựu."**  
 > *Project 90* là giải pháp phần mềm theo dõi thói quen cực đoan (Hardcore Habit & Discipline Tracker) được xây dựng trên nền tảng **Android Hiện Đại (Kotlin & Jetpack Compose)**, giúp người dùng bứt phá thể chất, dinh dưỡng, tâm trí và tài chính trước tháng Hai.
@@ -6,16 +6,6 @@
 ---
 
 ## 📱 Điểm Nổi Bật Trong Phiên Bản v1.0.0 (Official Release)
-
-### 1. 🛡️ Bảng Điều Khiển Thông Báo Đẩy Bám Sát 24/7 (Persistent Notification Dashboard)
-- **Cố định vĩnh viễn trên Status Bar:** Chạy dưới dạng Foreground Service chuyên biệt (`specialUse`), thiết lập `FLAG_ONGOING_EVENT` và `FLAG_NO_CLEAR`. Không thể bị xóa hay vuốt tắt bởi thao tác thông thường hoặc nút "Clear All".
-- **Tự động phục hồi:** Tích hợp `ACTION_REPOST` thông qua `deleteIntent` và cơ chế `START_STICKY`, tự động tái khởi động nếu hệ thống cố gắng giải phóng bộ nhớ.
-- **Giao diện Full-Width Chuẩn Material 3:** Bố cục phẳng không khoảng trống thừa, gồm:
-  - Header đếm ngược ngày và chuỗi lửa (Streak).
-  - Thanh tiến độ động theo thời gian thực.
-  - 4 ô chỉ số tóm tắt: Bước chân, Nước uống, Thể lực (Hít đất/Squat), Không đường (No Sugar).
-  - Danh sách cảnh báo các mục còn dang dở trong ngày.
-  - Phím tắt tương tác một chạm: `+250ml nước`, `+500 bước chân`, mở nhanh ứng dụng.
 
 ### 2. 🏃 Mô-đun Vận Động (Movement Tracker)
 - Tích hợp cảm biến đếm bước chân phần cứng (`Sensor.TYPE_STEP_COUNTER`) với mục tiêu **10.000 bước/ngày**.
